@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Jenkins Bitbucket Pull Request Approver</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      #jenkins_template {
+        max-width: 940px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container row-2 thin">
+      <h1>Jenkins Bitbucket Pull Request Approver</h1>
+      <div class="row-1">
+        <h3>Setup Jenkins</h3>
+        <p>
+        To use this service, add a <strong>post_build</strong> command to your
+        Jenkins job!<br> Also you need to ensure that <code>BUILD_STATUS</code>
+        environmental variable is set to <em>success</em> if the build passed
+        </p>
+
+        <fieldset>
+          <legend>Jenkins post build cURL command</legend>
+          <div class="row">
+            <input name="user" placeholder="username" type="text" />
+            <input name="repo" placeholder="repository" type="text" />
+          </div>
+
+          <div class="row">
+            <pre id="jenkins_template"></pre>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="row-1">
+        <h3>Setup Bitbucket</h3>
+        <p>
+        You need to add a <strong>POST Pull Request</strong> hook, with the following url:
+        </p>
+        <pre><script>document.write(window.location.toString());</script>bitbucket/post_pull_request</pre>
+      </div>
+
+    </div>
+
+    <script>
+      var elements = document.querySelectorAll('input');
+      var template = function(user, repo) {
+        return 'curl "' + window.location + 'jenkins/post_build?' +
+               'user=' + user +
+               '&repo=' + repo +
+               '&branch=$GIT_BRANCH' +
+               '&sha=$GIT_COMMIT' +
+               '&status=$BUILD_STATUS' +
+               '&job=$BUILD_NUMBER"'
+      };
+      var updateTemplate = function() {
+        var user = document.querySelectorAll('input[name=user]')[0].value;
+        var repo = document.querySelectorAll('input[name=repo]')[0].value;
+        document.querySelectorAll('#jenkins_template')[0].innerHTML = template(user, repo);
+      };
+
+      Array.prototype.forEach.call(elements, function(el, i){
+        el.addEventListener('keyup', updateTemplate);
+      });
+    </script>
+  </body>
+</html>
+

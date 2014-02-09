@@ -2,3 +2,14 @@
 source "https://rubygems.org"
 
 gem 'sinatra'
+gem 'redis'
+gem 'bitbucket_rest_api', github: 'trekdemo/bitbucket'
+
+group :development do
+  gem 'shotgun'
+  gem 'debugger'
+end
+
+group :test do
+
+end
