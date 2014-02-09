@@ -18,7 +18,7 @@
         <p>
         To use this service, add a <strong>post_build</strong> command to your
         Jenkins job!<br> Also you need to ensure that <code>BUILD_STATUS</code>
-        environmental variable is set to <em>success</em> if the build passed
+        environmental variable is set to <em>"success"</em> if the build passed
         </p>
 
         <fieldset>
@@ -55,15 +55,16 @@
                '&status=$BUILD_STATUS' +
                '&job=$BUILD_NUMBER"'
       };
-      var updateTemplate = function() {
-        var user = document.querySelectorAll('input[name=user]')[0].value;
-        var repo = document.querySelectorAll('input[name=repo]')[0].value;
+      var updateTemplate = function(user, repo) {
         document.querySelectorAll('#jenkins_template')[0].innerHTML = template(user, repo);
       };
 
       Array.prototype.forEach.call(elements, function(el, i){
-        el.addEventListener('keyup', updateTemplate);
+        var user = document.querySelectorAll('input[name=user]')[0].value;
+        var repo = document.querySelectorAll('input[name=repo]')[0].value;
+        el.addEventListener('keyup', function(){ updateTemplate(user, repo)});
       });
+      updateTemplate('username', 'repository');
     </script>
   </body>
 </html>
