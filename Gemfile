@@ -5,6 +5,8 @@ gem 'sinatra'
 gem 'redis'
 gem 'bitbucket_rest_api', github: 'trekdemo/bitbucket'
 
+gem 'dotenv', group: [:development, :test]
+
 group :development do
   gem 'shotgun'
   gem 'debugger'
