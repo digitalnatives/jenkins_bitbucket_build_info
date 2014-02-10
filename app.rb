@@ -3,12 +3,10 @@ require 'json'
 require 'application_helpers'
 
 require 'pull_request_approver'
-require 'bitbucket_hooks'
 
-helpers ApplicationHelper
+helpers ApplicationHelpers
 
 get '/' do
-  content_type 'text/html'
   erb :index
 end
 
@@ -28,19 +26,19 @@ get '/jenkins/post_build' do
     user:       params[:user],
     repo:       params[:repo],
     branch:     params[:branch],
-    succeeded:  params[:status].underscore == 'success',
+    succeeded:  params[:status].to_s.downcase == 'success',
   }
   logger.info "JENKINS post_build: #{build_payload.to_json}"
 
   # Store the status of this sha for later
-  redis.mapped_hmset redis_key(build_payload), build_payload
+  redis.mapped_hmset build_key(build_payload), build_payload
 
   # Look for an open pull request with this SHA and approve it.
   PullRequestApprover.new(build_payload).update_approval!
 end
 
 get '/:user/:repo/:sha/badge' do |user, repo, sha|
-  build_succeeded = redis.hget(redis_key(user: user, repo: repo, sha: sha), :succeeded)
+  build_succeeded = redis.hget(build_key(user: user, repo: repo, sha: sha), :succeeded)
   status = case build_succeeded
            when 'true'  then 'success'
            when 'false' then 'failure'

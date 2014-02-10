@@ -1,6 +1,4 @@
 PullRequestApprover = Struct.new(:build_payload) do
-  include BitbucketHelpers
-
   def user
     build_payload[:user]
   end
@@ -38,5 +36,9 @@ PullRequestApprover = Struct.new(:build_payload) do
   private
   def all_pull_requests
     bitbucket.repos.pullrequests.all(user, repo)[:values]
+  end
+
+  def bitbucket
+    ApplicationHelpers.bitbucket
   end
 end
