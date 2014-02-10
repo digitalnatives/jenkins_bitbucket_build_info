@@ -34,3 +34,15 @@ get '/jenkins/post_build' do
   # Look for an open pull request with this SHA and approve it.
   PullRequestApprover.new(build_payload).update_approval!
 end
+
+get '/:user/:repo/:sha/badge' do |user, repo, sha|
+  build_succeeded = redis.hget(redis_key(user: user, repo: repo, sha: sha), :succeeded)
+  status = case build_succeeded
+           when 'true'  then 'success'
+           when 'false' then 'failure'
+           else 'unknown'
+           end
+
+  logger.info "Build status of #{user}/#{repo}@#{sha} #{status}"
+  send_file File.join(settings.public_folder, 'status', "#{status}.png")
+end
