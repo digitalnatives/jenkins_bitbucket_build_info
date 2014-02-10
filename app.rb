@@ -18,15 +18,7 @@ get '/jenkins/post_build' do
   content_type 'text/plain'
   halt 400, 'Must provide commit sha!' unless params[:sha]
 
-  build_payload = {
-    sha:        params[:sha],
-    job_name:   params[:job_name],
-    job_number: params[:job_number],
-    user:       params[:user],
-    repo:       params[:repo],
-    branch:     params[:branch],
-    succeeded:  params[:status].to_s.downcase == 'success',
-  }
+  build_payload = parse_build_payload(params)
   logger.info "JENKINS post_build: #{build_payload.to_json}"
 
   # Store the status of this sha for later
