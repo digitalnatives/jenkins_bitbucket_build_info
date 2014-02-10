@@ -5,7 +5,6 @@ require 'application_helpers'
 require 'pull_request_approver'
 require 'bitbucket_hooks'
 
-before { content_type 'text/plain' }
 helpers ApplicationHelper
 
 get '/' do
@@ -13,7 +12,13 @@ get '/' do
   erb :index
 end
 
+post '/bitbucket/post_pull_request' do
+  content_type 'text/plain'
+  logger.fatal 'bitbucket hook is not implemented'
+end
+
 get '/jenkins/post_build' do
+  content_type 'text/plain'
   halt 400, 'Must provide commit sha!' unless params[:sha]
 
   build_payload = {
@@ -23,7 +28,7 @@ get '/jenkins/post_build' do
     user:       params[:user],
     repo:       params[:repo],
     branch:     params[:branch],
-    succeeded:  params[:status] == 'success',
+    succeeded:  params[:status].underscore == 'success',
   }
   logger.info "JENKINS post_build: #{build_payload.to_json}"
 
