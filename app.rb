@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'json'
 require 'application_helpers'
-
 require 'pull_request_approver'
 
 helpers ApplicationHelpers

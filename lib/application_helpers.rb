@@ -4,7 +4,7 @@ module ApplicationHelpers
   extend self
 
   def redis
-    @redis ||= Redis.new(redis_hash)
+    @redis ||= Redis.new # uses ENV['REDIS_URL'] by default
   end
 
   def build_key(user: nil, repo: nil, sha: nil, **other)
@@ -13,12 +13,6 @@ module ApplicationHelpers
 
   def bitbucket
     @bitbucket ||= BitBucket.new({basic_auth: ENV['BITBUCKET_CREDENTIALS']})
-  end
-
-  private
-  def redis_hash
-    uri = URI.parse(ENV['REDIS_URL'])
-    {host: uri.host, port: uri.port, password: uri.password}
   end
 end
 
