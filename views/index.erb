@@ -60,9 +60,11 @@
       };
 
       Array.prototype.forEach.call(elements, function(el, i){
-        var user = document.querySelectorAll('input[name=user]')[0].value;
-        var repo = document.querySelectorAll('input[name=repo]')[0].value;
-        el.addEventListener('keyup', function(){ updateTemplate(user, repo)});
+        el.addEventListener('keyup', function(){
+          var user = document.querySelectorAll('input[name=user]')[0].value;
+          var repo = document.querySelectorAll('input[name=repo]')[0].value;
+          updateTemplate(user, repo)
+        });
       });
       updateTemplate('username', 'repository');
     </script>
