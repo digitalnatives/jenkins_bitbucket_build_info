@@ -40,24 +40,39 @@
         You need to add a <strong>POST Pull Request</strong> hook, with the following url:
         </p>
         <pre><script>document.write(window.location.toString());</script>bitbucket/post_pull_request</pre>
+        <a href="#" onclick="createHook()">
+          Click here to create this hook
+        </a>
       </div>
 
     </div>
 
     <script>
-      var elements = document.querySelectorAll('input');
-      var template = function(user, repo) {
-        return 'curl "' + window.location + 'jenkins/post_build?' +
-               'user=' + user +
-               '&repo=' + repo +
-               '&branch=$GIT_BRANCH' +
-               '&sha=$GIT_COMMIT' +
-               '&status=$BUILD_STATUS' +
-               '&job=$BUILD_NUMBER"'
-      };
-      var updateTemplate = function(user, repo) {
-        document.querySelectorAll('#jenkins_template')[0].innerHTML = template(user, repo);
-      };
+      var elements = document.querySelectorAll('input'),
+
+          template = function(user, repo) {
+            return 'curl "' + window.location + 'jenkins/post_build?' +
+                  'user=' + user +
+                  '&repo=' + repo +
+                  '&branch=$GIT_BRANCH' +
+                  '&sha=$GIT_COMMIT' +
+                  '&status=$BUILD_STATUS' +
+                  '&job=$BUILD_NUMBER"'
+          },
+
+          updateTemplate = function(user, repo) {
+            document.querySelectorAll('#jenkins_template')[0].innerHTML = template(user, repo);
+          };
+
+       window.createHook = function(e) {
+            var user = document.querySelectorAll('input[name=user]')[0].value,
+                repo = document.querySelectorAll('input[name=repo]')[0].value,
+                jenkins_url = window.location.toString() + "bitbucket/post_pull_request",
+                bt_url = "https://bitbucket.org/" + user + "/" + repo + "/admin/services?service=Pull%20Request%20POST&url=" + jenkins_url + "&create%2Fedit%2Fmerge%2Fdecline=on&comments=on&approve%2Funapprove=on",
+                win = window.open(bt_url, '_blank');
+            win.focus();
+            e.preventDefault();
+          };
 
       Array.prototype.forEach.call(elements, function(el, i){
         el.addEventListener('keyup', function(){
