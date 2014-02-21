@@ -9,6 +9,13 @@ describe 'Application' do
     end
   end
 
+  describe 'POST /bitbucket/post_pull_request' do
+    it "fails because the action is not implemented" do
+      post '/bitbucket/post_pull_request'
+      expect(last_response.status).to eql 501
+    end
+  end
+
   describe 'GET /jenkins/post_build' do
     context 'without sha' do
       it 'returns an error page' do
@@ -19,7 +26,14 @@ describe 'Application' do
     end
 
     context 'when payload is present' do
+      let(:pull_request_approver) { double(:pull_request_approver) }
+
+      before do
+        pull_request_approver.stub(:update_approval!)
+      end
+
       it 'returns OK' do
+        PullRequest::Approver.stub(new: pull_request_approver)
         get '/jenkins/post_build', {
           sha:        '123456789abcdef',
           job_name:   'test',

@@ -12,6 +12,7 @@ end
 post '/bitbucket/post_pull_request' do
   content_type 'text/plain'
   logger.fatal 'bitbucket hook is not implemented'
+  halt 501
 end
 
 get '/jenkins/post_build' do

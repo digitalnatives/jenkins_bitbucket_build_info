@@ -9,9 +9,11 @@ gem 'dotenv'
 group :development do
   gem 'shotgun'
   gem 'debugger'
+  gem 'guard-rspec', require: false
 end
 
 group :test do
+  gem 'mock_redis'
   gem 'rspec'
   gem 'rack-test'
 end
