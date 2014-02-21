@@ -33,7 +33,7 @@ describe 'Application' do
       end
 
       it 'returns OK' do
-        PullRequestApprover.stub(new: pull_request_approver)
+        PullRequest::Approver.stub(new: pull_request_approver)
         get '/jenkins/post_build', {
           sha:        '123456789abcdef',
           job_name:   'test',
