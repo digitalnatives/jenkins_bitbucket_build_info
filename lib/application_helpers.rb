@@ -1,4 +1,5 @@
 require 'bitbucket_rest_api'
+require 'commit_status'
 
 module ApplicationHelpers
   extend self
@@ -12,19 +13,11 @@ module ApplicationHelpers
   end
 
   def build_key(user: nil, repo: nil, sha: nil, **other)
-    "jenkins:build_info:#{user}:#{repo}:#{sha}"
+    "build_info:#{user}:#{repo}:#{sha}"
   end
 
   def parse_build_payload(params)
-    {
-      sha:        params[:sha],
-      job_name:   params[:job_name],
-      job_number: params[:job_number],
-      user:       params[:user],
-      repo:       params[:repo],
-      branch:     params[:branch],
-      succeeded:  params[:status].to_s.downcase == 'success',
-    }
+    CommitStatus.new(params).to_h
   end
 end
 

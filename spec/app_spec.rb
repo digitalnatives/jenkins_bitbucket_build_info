@@ -27,7 +27,7 @@ describe 'Application' do
           user:       'trekdemo',
           repo:       'jenkins_bitbucket_build_info',
           branch:     'master',
-          succeess:   'success',
+          status:     'success',
         }
         expect(last_response).to be_ok
       end

@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'json'
 require 'application_helpers'
-require 'pull_request_approver'
+require 'pull_request/approver'
 
 helpers ApplicationHelpers
 
@@ -25,7 +25,7 @@ get '/jenkins/post_build' do
   redis.mapped_hmset build_key(build_payload), build_payload
 
   # Look for an open pull request with this SHA and approve it.
-  PullRequestApprover.new(build_payload).update_approval!
+  PullRequest::Approver.new(build_payload).update_approval!
 end
 
 get '/:user/:repo/:sha/badge' do |user, repo, sha|
