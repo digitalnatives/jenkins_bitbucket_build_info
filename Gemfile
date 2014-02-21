@@ -9,6 +9,7 @@ gem 'dotenv'
 group :development do
   gem 'shotgun'
   gem 'debugger'
+  gem 'guard-rspec', require: false
 end
 
 group :test do
