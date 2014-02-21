@@ -13,6 +13,7 @@ group :development do
 end
 
 group :test do
+  gem 'mock_redis'
   gem 'rspec'
   gem 'rack-test'
 end
