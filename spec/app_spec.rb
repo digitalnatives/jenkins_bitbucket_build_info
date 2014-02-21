@@ -9,6 +9,13 @@ describe 'Application' do
     end
   end
 
+  describe 'POST /bitbucket/post_pull_request' do
+    it "fails because the action is not implemented" do
+      post '/bitbucket/post_pull_request'
+      expect(last_response.status).to eql 501
+    end
+  end
+
   describe 'GET /jenkins/post_build' do
     context 'without sha' do
       it 'returns an error page' do
