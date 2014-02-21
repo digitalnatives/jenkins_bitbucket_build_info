@@ -3,7 +3,7 @@ source "https://rubygems.org"
 
 gem 'sinatra'
 gem 'redis'
-gem 'bitbucket_rest_api', github: 'trekdemo/bitbucket'
+gem 'bitbucket_rest_api', github: 'digitalnatives/bitbucket'
 gem 'dotenv'
 
 group :development do

@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/trekdemo/bitbucket.git
+  remote: git://github.com/digitalnatives/bitbucket.git
   revision: f5c398ed7d9ca745f49bf06df8dc7e2ec096533c
   specs:
     bitbucket_rest_api (0.1.5)
