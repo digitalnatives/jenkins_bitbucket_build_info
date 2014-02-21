@@ -19,7 +19,14 @@ describe 'Application' do
     end
 
     context 'when payload is present' do
+      let(:pull_request_approver) { double(:pull_request_approver) }
+
+      before do
+        pull_request_approver.stub(:update_approval!)
+      end
+
       it 'returns OK' do
+        PullRequestApprover.stub(new: pull_request_approver)
         get '/jenkins/post_build', {
           sha:        '123456789abcdef',
           job_name:   'test',
