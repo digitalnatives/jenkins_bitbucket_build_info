@@ -11,6 +11,9 @@ Not build related description
 
 ![passed_build_image] 1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf 2014/02/21
 ![failed_build_image] a4cad4e4c24ab53a725fe8953c2d587dd34573e1
+[passed_build_image]: http://passed_build_image_url.png
+[failed_build_image]: http://failed_build_image_url.png
+[unknown_build_image]: http://unknown_build_image_url.png
     end_of_description
   end
 
@@ -33,14 +36,18 @@ Not build related description
       expect(build_log.normal_description).to eq "Not build related description"
     end
 
-    it "transforms Jenkins builds list into a hash" do
-      expect(build_log.builds_hash).to eq builds_hash
+    it "transforms Jenkins builds list into a hash with expected values" do
+      builds_hash.each do |commit_hash, build_hash|
+        build_hash.each do |key, value|
+          expect(build_log.builds_hash[commit_hash].send(key)).to eq(value)
+        end
+      end
     end
   end
 
   describe "#to_s" do
     it "regenerates previous description string" do
-      expect(build_log.to_s).to start_with(description_string)
+      expect(build_log.to_s).to eq(description_string.strip)
     end
 
     it "contains build images urls at the bottom" do

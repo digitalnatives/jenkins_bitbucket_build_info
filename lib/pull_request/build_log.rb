@@ -1,26 +1,33 @@
+require 'pull_request/build_log_line'
+
 module PullRequest
   class BuildLog
     attr_reader :normal_description, :builds_hash
 
     def initialize(description_string)
-      @normal_description, build_lines = description_string.split(PullRequest::BuildLog.separator)
-      build_lines ||= ""
+      @normal_description, build_lines = description_string.split(self.class.separator)
       @normal_description.strip!
-      @builds_hash = Hash[build_lines.strip.each_line.map do |line|
-        line_to_hash_line(line.strip)
+      build_lines = (build_lines || "").strip.each_line.reject do |line|
+        line.match(/\[.*\]: .+/)
+      end
+      @builds_hash = Hash[build_lines.map do |line|
+        build_log_line = BuildLogLine.new(line: line.strip)
+        [build_log_line.commit_hash, build_log_line]
       end]
     end
 
     def to_s
       [normal_description,
-       PullRequest::BuildLog.separator,
+       self.class.separator,
        builds_hash_to_s,
-       PullRequest::BuildLog.build_images].join "\n"
+       self.class.build_images].join "\n"
     end
     alias :description :to_s
 
     def add_build!(commit_hash, status, date = nil)
-      @builds_hash[commit_hash] = { commit_hash: commit_hash, status: status, date: date }.delete_if { |k, v| v.nil? }
+      @builds_hash[commit_hash] = BuildLogLine.new(commit_hash: commit_hash,
+                                                   status: status,
+                                                   date: date)
     end
 
     def self.separator
@@ -39,33 +46,14 @@ module PullRequest
     def self.build_images
       build_status_images_hash.map do |status, url|
         "[#{status}_build_image]: #{url}"
-      end.join '\n'
-    end
-
-    def self.build_image(status, commit_hash)
-      #TODO link to commit build using commit_hash
-      "![#{status}_build_image]"
-    end
-
-    def self.status_image_to_status(status_image)
-      status_image.tr("![]", "").split('_').first.to_sym
-    end
-
-    def self.commit_url(commit_hash)
-      #TODO link to bitbucket commit
-      commit_hash
+      end.join "\n"
     end
 
     private
 
-    def line_to_hash_line(line)
-      fields = line.split(" ")
-      [ fields[1], { commit_hash: fields[1], status: self.class.status_image_to_status(fields[0]), date: fields[2]}.delete_if { |k, v| v.nil? } ]
-    end
-
     def builds_hash_to_s
-      builds_hash.map do |_, build_hash|
-        "#{self.class.build_image(build_hash[:status], build_hash[:commit_hash])} #{self.class.commit_url(build_hash[:commit_hash])} #{build_hash[:date]}".strip
+      builds_hash.map do |_, build_log_line|
+        build_log_line.to_s
       end.join "\n"
     end
   end
