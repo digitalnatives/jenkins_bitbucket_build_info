@@ -4,6 +4,7 @@ module PullRequest
 
     def initialize(description_string)
       @normal_description, build_lines = description_string.split(PullRequest::BuildLog.separator)
+      build_lines ||= ""
       @normal_description.strip!
       @builds_hash = Hash[build_lines.strip.each_line.map do |line|
         line_to_hash_line(line.strip)
@@ -11,8 +12,12 @@ module PullRequest
     end
 
     def to_s
-      [normal_description, PullRequest::BuildLog.separator, builds_hash_to_s].join "\n"
+      [normal_description,
+       PullRequest::BuildLog.separator,
+       builds_hash_to_s,
+       PullRequest::BuildLog.build_images].join "\n"
     end
+    alias :description :to_s
 
     def add_build!(commit_hash, status, date = nil)
       @builds_hash[commit_hash] = { commit_hash: commit_hash, status: status, date: date }.delete_if { |k, v| v.nil? }
@@ -20,6 +25,15 @@ module PullRequest
 
     def self.separator
       "\n### Jenkins build statuses\n"
+    end
+
+    def self.build_images
+      #TODO put the real images urls
+      <<-build_images_urls
+      [passed]: http://passed_build_image_url.png
+      [failed]: http://failed_build_image_url.png
+      [unknown]: http://unknown_build_image_url.png
+      build_images_urls
     end
 
     private

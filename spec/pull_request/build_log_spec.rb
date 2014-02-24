@@ -40,7 +40,11 @@ http://failed_image_url.png a4cad4e4c24ab53a725fe8953c2d587dd34573e1
 
   describe "#to_s" do
     it "regenerates previous description string" do
-      expect(build_log.to_s).to eq(description_string.strip)
+      expect(build_log.to_s).to start_with(description_string)
+    end
+
+    it "contains build images urls at the bottom" do
+      expect(build_log.to_s).to end_with(PullRequest::BuildLog.build_images)
     end
   end
 
