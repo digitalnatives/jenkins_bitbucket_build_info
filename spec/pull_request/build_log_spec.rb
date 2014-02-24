@@ -9,8 +9,8 @@ Not build related description
 
 ### Jenkins build statuses
 
-http://passed_image_url.png 1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf 2014/02/21
-http://failed_image_url.png a4cad4e4c24ab53a725fe8953c2d587dd34573e1
+![passed_build_image] 1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf 2014/02/21
+![failed_build_image] a4cad4e4c24ab53a725fe8953c2d587dd34573e1
     end_of_description
   end
 
@@ -22,10 +22,10 @@ http://failed_image_url.png a4cad4e4c24ab53a725fe8953c2d587dd34573e1
 
     let(:builds_hash) do
       {"1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf" => { commit_hash: "1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf",
-                                                       status: "http://passed_image_url.png",
+                                                       status: :passed,
                                                        date: "2014/02/21" },
     "a4cad4e4c24ab53a725fe8953c2d587dd34573e1" => { commit_hash: "a4cad4e4c24ab53a725fe8953c2d587dd34573e1",
-                                                    status: "http://failed_image_url.png" }
+                                                    status: :failed}
       }
     end
 
