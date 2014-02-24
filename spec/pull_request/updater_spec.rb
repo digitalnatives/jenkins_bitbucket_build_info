@@ -7,11 +7,25 @@ describe PullRequest::Updater do
   let(:description) { "Pull request description" }
   let(:user) { "user" }
   let(:repo) { "repo" }
-  let(:pull_request_updater) { PullRequest::Updater.new(user: "user", repo: "repo") }
+  let(:pull_request_updater) { PullRequest::Updater.new(user: "user", repo: "repo", sha: "abcde123456789") }
   let(:build_log) { double(:build_log).as_null_object }
   let(:commit_hash) { "abcde123456789" }
   let(:status) { "passed" }
   let(:date) { Time.now.to_s }
+
+  describe "#pull_request" do
+    before do
+      pull_request_updater.stub_chain(:bitbucket, :repos, :pullrequests, :all, :[]).and_return([
+        Hashie::Mash.new({ id: 1, source: { commit: { hash: "somehash" }}}),
+        Hashie::Mash.new({ id: 2, source: { commit: { hash: "someotherhash" }}}),
+        Hashie::Mash.new({ id: 3, source: { commit: { hash: "abcde123456789" }}}),
+      ])
+    end
+
+    it "selects the right pull request" do
+      expect(pull_request_updater.pull_request.id).to eq(3)
+    end
+  end
 
   describe '#update_build' do
     before do
