@@ -11,7 +11,7 @@ describe 'Application' do
 
   describe 'POST /bitbucket/post_pull_request' do
     it "fails because the action is not implemented" do
-      post '/bitbucket/post_pull_request'
+      post '/bitbucket/post_pull_request', File.read("spec/fixtures/bitbucket/pull_request/created.json")
       expect(last_response.status).to eql 501
     end
   end

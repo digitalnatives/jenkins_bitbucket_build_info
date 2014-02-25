@@ -2,13 +2,19 @@ class PullRequest::HookRequestParser
   attr_reader :json_payload
 
   def initialize(json_payload)
-    @json_payload = json_payload
+    @json_payload = Hashie::Mash.new(JSON.parse(json_payload))
   end
 
   def hook_type
-    root.gsub("pullrequest_", "").to_sym
+    @hook_type ||= root.gsub("pullrequest_", "").to_sym
   end
 
+  def can_trigger_a_build?
+    [:created, :updated].include?(hook_type)
+  end
+
+  # The next methods won't work for all cases. The cases that they
+  # won't work do not concern our interests, so this should be enough.
   def username
     body.author.username
   end
@@ -24,11 +30,12 @@ class PullRequest::HookRequestParser
     when :updated
       body.source.commit.sha
     else
-      # This won't work for all cases, but is a frequent pattern.
-      # The cases that it won't work do not concern our interests,
-      # so this should be enough.
       body.source.commit[:hash]
     end
+  end
+
+  def attributes_hash
+    { user: username, sha: commit_hash, repo: repository }
   end
 
   private

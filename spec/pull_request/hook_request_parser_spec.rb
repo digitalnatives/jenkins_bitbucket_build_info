@@ -2,16 +2,12 @@ require 'spec_helper'
 require 'pull_request/hook_request_parser'
 
 describe PullRequest::HookRequestParser do
-  def load_pull_request_fixture(name)
-    Hashie::Mash.new(
-      JSON.parse(
-        File.read("spec/fixtures/bitbucket/pull_request/#{name}.json")
-      )
-    )
+  def pull_request_fixture(name)
+    File.read("spec/fixtures/bitbucket/pull_request/#{name}.json")
   end
 
   def fixture_hook_parser(name)
-    PullRequest::HookRequestParser.new(load_pull_request_fixture(name))
+    PullRequest::HookRequestParser.new(pull_request_fixture(name))
   end
 
   let(:created_hook_parser) { fixture_hook_parser("created") }

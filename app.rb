@@ -2,6 +2,7 @@ require 'sinatra'
 require 'json'
 require 'application_helpers'
 require 'pull_request/approver'
+require 'pull_request/hook_request_parser'
 
 helpers ApplicationHelpers
 
@@ -11,6 +12,12 @@ end
 
 post '/bitbucket/post_pull_request' do
   content_type 'text/plain'
+  hook_request_parser = PullRequest::HookRequestParser.new(request.body.read)
+
+  if hook_request_parser.can_trigger_a_build? && !redis.hget(build_key(hook_request_parser.attributes_hash), :sha)
+    # TODO send a build request to jenkins
+    redis.mapped_hmset build_key(hook_request_parser.attributes_hash), hook_request_parser.attributes_hash
+  end
   logger.fatal 'bitbucket hook is not implemented'
   halt 501
 end
