@@ -33,7 +33,7 @@ get '/jenkins/post_build' do
   redis.mapped_hmset build_key(build_payload), build_payload
 
   # Look for an open pull request with this SHA and approve it.
-  PullRequest::Approver.new(build_payload).update_approval!
+  PullRequest::PR.find(build_payload.sha).update_approval!(build_payload)
 end
 
 get '/:user/:repo/:sha/badge' do |user, repo, sha|
