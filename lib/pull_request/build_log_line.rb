@@ -17,12 +17,13 @@ class BuildLogLine
   def initialize(options)
     if options.has_key?(:line)
       @line = options[:line]
-      @sha  = @line.scan(/[\dabcdef]{40}/).first
-      @date = Date.strptime(@line.scan(/\d{4}\/\d{1,2}\/\d{1,2}/).first, DATE_FORMAT)
+      @sha  = @line.scan(/[a-f\d]{40}/).first
+      date_string = @line.scan(/\d{4}\/\d{1,2}\/\d{1,2}/).first
     else
       @sha  = options.fetch(:sha)
-      @date = options[:date]
+      date_string = options[:date]
     end
+    @date = Date.strptime(date_string, DATE_FORMAT) if date_string
   end
 
   def formatted_date(format = DATE_FORMAT)

@@ -5,8 +5,9 @@ describe PullRequest::BuildLog do
   PR_DESCRIPTION_PATH = File.expand_path('../../fixtures/bitbucket/pull_request/pr_description.txt', __FILE__)
 
   let(:description_string) { File.read(PR_DESCRIPTION_PATH) }
+  let(:repo_full_name) { "user/repo" }
 
-  subject { described_class.new(description_string) }
+  subject { described_class.new(description_string, repo_full_name) }
 
   describe ".initialize" do
     let(:build_statuses) do
@@ -38,9 +39,14 @@ describe PullRequest::BuildLog do
   end
 
   describe "#add_build!" do
+    let(:sha) { '8888888888888888888888888888888888888888' }
+    let(:date) { '2014/02/23' }
+    let!(:previous_description) { subject.to_s.rstrip }
+    let(:new_build_line) { BuildLogLine.from_status(sha: sha, date: date) }
+
     it 'should insert a new line into the description' do
-      subject.add_build!('8888888888888888888888888888888888888888', :failed, '2014/02/23')
-      expect(subject.to_s).to eql "#{description_string.rstrip}\n![failed_build_image] 8888888888888888888888888888888888888888 2014/02/23\n"
+      subject.add_build!(sha, date)
+      expect(subject.build_lines.to_a).to include(new_build_line)
     end
   end
 

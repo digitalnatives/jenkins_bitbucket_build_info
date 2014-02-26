@@ -2,28 +2,36 @@ require 'spec_helper'
 require 'pull_request/build_log_line'
 
 describe BuildLogLine do
+  DATE_FORMAT = BuildLogLine::DATE_FORMAT
+
+  let(:status) { { sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2014/02/21' } }
+  let(:line) { "![badge](/user/repo/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf/badge) [commit details](https://bitbucket.org/user/repo/commits/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf) 2014/02/21" }
+
+  let(:build_line_from_string) { BuildLogLine.from_string(line) }
+  let(:build_line_from_status) { BuildLogLine.from_status(status) }
 
   describe '.from_string' do
-    pending
+    it "parses the date correctly" do
+      expect(build_line_from_string.date).to eq(Date.strptime(status[:date].to_s, DATE_FORMAT))
+    end
+
+    it "parses the sha correctly" do
+      expect(build_line_from_string.sha).to eq(status[:sha])
+    end
   end
 
   describe '.from_status' do
-    pending
-  end
+    it "saves the sha" do
+      expect(build_line_from_status.sha).to eq status[:sha]
+    end
 
-  describe '#line' do
-    context 'when instantiated from string'
-    context 'when instantiated from status'
-  end
+    it "saves the date" do
+      expect(build_line_from_status.date.strftime(DATE_FORMAT)).to eq status[:date]
+    end
 
-  describe '#sha' do
-    context 'when instantiated from string'
-    context 'when instantiated from status'
-  end
-
-  describe '#date' do
-    context 'when instantiated from string'
-    context 'when instantiated from status'
+    it "leaves nil on date if it is not present" do
+      expect(BuildLogLine.from_status(sha: status[:sha]).date).to be_nil
+    end
   end
 
   describe '#eql?' do
