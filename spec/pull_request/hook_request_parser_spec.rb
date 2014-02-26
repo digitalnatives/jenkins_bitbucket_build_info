@@ -51,14 +51,14 @@ describe PullRequest::HookRequestParser do
   end
 
 
-  describe "#commit_hash" do
+  describe "#sha" do
     context "is parsed correctly when a pull request is" do
       specify "created" do
-        expect(created_hook_parser.commit_hash).to eq("325625d47b0a")
+        expect(created_hook_parser.sha).to eq("325625d47b0a")
       end
 
       specify "updated" do
-        expect(updated_hook_parser.commit_hash).to eq("6ddd631f33de")
+        expect(updated_hook_parser.sha).to eq("6ddd631f33de")
       end
     end
   end

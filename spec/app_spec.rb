@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pull_request/pr'
 
 describe 'Application' do
 
@@ -26,15 +27,8 @@ describe 'Application' do
     end
 
     context 'when payload is present' do
-      let(:pull_request_approver) { double(:pull_request_approver) }
-
-      before do
-        pull_request_approver.stub(:update_approval!)
-      end
-
-      it 'returns OK' do
-        PullRequest::Approver.stub(new: pull_request_approver)
-        get '/jenkins/post_build', {
+      let(:pull_request) { double(:pull_request) }
+      let(:build_parameters) { {
           sha:        '123456789abcdef',
           job_name:   'test',
           job_number: 'b123',
@@ -43,6 +37,20 @@ describe 'Application' do
           branch:     'master',
           status:     'success',
         }
+      }
+
+      before do
+        PullRequest::PR.stub_chain(:find, :update_approval!)
+      end
+
+      it "receives a hash with parsed data" do
+        PullRequest::PR.stub(find: pull_request)
+        pull_request.should_receive(:update_approval!).with(build_parameters)
+        get '/jenkins/post_build', build_parameters
+      end
+
+      it 'returns OK' do
+        get '/jenkins/post_build', build_parameters
         expect(last_response).to be_ok
       end
     end

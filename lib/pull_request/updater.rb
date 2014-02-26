@@ -2,11 +2,11 @@ require 'ostruct'
 
 module PullRequest
   class Updater < OpenStruct
-    def update_build!(commit_hash, status, date = nil)
+    def update_build!(sha, status, date = nil)
       return 'No pull-request found' unless pull_request
 
       build_log = PullRequest::BuildLog.new(pull_request.description)
-      build_log.add_build!(commit_hash, status, date)
+      build_log.add_build!(sha, status, date)
 
       update_pull_request(description: build_log.to_s)
     end

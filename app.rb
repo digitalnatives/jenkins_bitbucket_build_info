@@ -26,14 +26,14 @@ get '/jenkins/post_build' do
   content_type 'text/plain'
   halt 400, 'Must provide commit sha!' unless params[:sha]
 
-  build_payload = parse_build_payload(params)
+  build_payload = CommitStatus.new(params).to_h
   logger.info "JENKINS post_build: #{build_payload.to_json}"
 
   # Store the status of this sha for later
   redis.mapped_hmset build_key(build_payload), build_payload
 
   # Look for an open pull request with this SHA and approve it.
-  PullRequest::PR.find(build_payload.sha).update_approval!(build_payload)
+  PullRequest::PR.find(build_payload[:sha]).update_approval!(build_payload)
 end
 
 get '/:user/:repo/:sha/badge' do |user, repo, sha|

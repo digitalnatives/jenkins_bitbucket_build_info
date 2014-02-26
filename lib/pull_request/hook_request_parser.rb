@@ -23,7 +23,7 @@ class PullRequest::HookRequestParser
     body.destination.repository.full_name
   end
 
-  def commit_hash
+  def sha
     case hook_type
     when :created
       body.source.commit[:hash]
@@ -35,7 +35,7 @@ class PullRequest::HookRequestParser
   end
 
   def attributes_hash
-    { user: username, sha: commit_hash, repo: repository }
+    { user: username, sha: sha, repo: repository }
   end
 
   private
