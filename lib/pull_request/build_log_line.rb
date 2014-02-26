@@ -1,42 +1,38 @@
 class BuildLogLine
+  include Comparable
+  DATE_FORMAT = '%Y/%m/%d'
+
+  private_class_method :new
+
+  attr_reader :sha, :date
+
+  def self.from_string(line)
+    new(line: line)
+  end
+
+  def self.from_status(options = {})
+    new(options)
+  end
+
   def initialize(options)
-    @line = options[:line]
-    @status = options[:status]
-    @commit_hash = options[:commit_hash]
-    @date = options[:date]
+    if options.has_key?(:line)
+      @line = options[:line]
+      @sha  = @line.scan(/[\dabcdef]{40}/).first
+      @date = Date.strptime(@line.scan(/\d{4}\/\d{1,2}\/\d{1,2}/).first, DATE_FORMAT)
+    else
+      @sha  = options.fetch(:sha)
+      @date = options[:date]
+    end
   end
 
-  def line
-    @line ||= "#{status_image} #{commit_url} #{date}".strip
+  def formatted_date(format = DATE_FORMAT)
+    date.strftime(format)
   end
 
-  def status
-    @status ||= splitted_line[0].tr("![]", "").split('_').first.to_sym
+  def <=>(anOther)
+    sha <=> anOther.sha
   end
+  alias_method :eql?, :==
+  alias_method :equal?, :==
 
-  def commit_hash
-    @commit_hash ||= splitted_line[1]
-  end
-
-  def date
-    @date ||= splitted_line[2]
-  end
-
-  def status_image
-    #TODO link to commit build using commit_hash
-    "![#{status}_build_image]"
-  end
-
-  def commit_url
-    #TODO link to bitbucket commit
-    commit_hash
-  end
-
-  alias :to_s :line
-
-  private
-
-  def splitted_line
-    @splitted_line ||= line.split(" ")
-  end
 end
