@@ -11,9 +11,40 @@ describe 'Application' do
   end
 
   describe 'POST /bitbucket/post_pull_request' do
-    it "fails because the action is not implemented" do
+
+    def post_to_hook
       post '/bitbucket/post_pull_request', File.read("spec/fixtures/bitbucket/pull_request/created.json")
-      expect(last_response.status).to eql 501
+    end
+
+    let(:hook_request_parser) { double(:hook_request_parser).as_null_object }
+    let(:build) { double(:build).as_null_object }
+
+    before do
+      Build.stub(new: build)
+      PullRequest::HookRequestParser.stub(new: hook_request_parser)
+    end
+
+    context "does not submit a new build when" do
+      it "has new commits which have already been built" do
+        hook_request_parser.stub(can_trigger_a_build?: true)
+        build.stub(new?: false)
+        expect(build).not_to receive(:submit)
+        post_to_hook
+      end
+
+      it "has no new commits" do
+        hook_request_parser.stub(can_trigger_a_build?: false)
+        expect(build).not_to receive(:submit)
+        post_to_hook
+      end
+    end
+
+    it "submits a new build and returns OK" do
+      hook_request_parser.stub(can_trigger_a_build?: true)
+      build.stub(new?: true)
+      expect(build).to receive(:submit)
+      post_to_hook
+      expect(last_response).to be_ok
     end
   end
 
@@ -40,18 +71,20 @@ describe 'Application' do
       }
 
       before do
-        PullRequest::PR.stub_chain(:find, :update_approval!)
-      end
-
-      it "receives a hash with parsed data" do
         PullRequest::PR.stub(find: pull_request)
-        pull_request.should_receive(:update_approval!).with(build_parameters)
-        get '/jenkins/post_build', build_parameters
+        pull_request.stub(:exists?).and_return(true)
       end
 
-      it 'returns OK' do
+      it "updates the pull request that it finds" do
+        pull_request.should_receive(:new_build!).with(build_parameters)
         get '/jenkins/post_build', build_parameters
         expect(last_response).to be_ok
+      end
+
+      it "does not update any pull request if it can't find one" do
+        pull_request.stub(:exists?).and_return(false)
+        expect(pull_request).not_to receive(:new_build!)
+        get '/jenkins/post_build', build_parameters
       end
     end
   end
