@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/digitalnatives/bitbucket.git
-  revision: f5c398ed7d9ca745f49bf06df8dc7e2ec096533c
+  revision: 807e64291b23639c8a0a2fb7e6c049844cf96069
   specs:
     bitbucket_rest_api (0.1.5)
       faraday (~> 0.8.1)
