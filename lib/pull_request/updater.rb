@@ -1,12 +1,16 @@
 require 'ostruct'
+require 'forwardable'
 
 module PullRequest
   class Updater < OpenStruct
-    def update_build!(sha, status, date = nil)
+    extend Forwardable
+
+    def_delegators :pull_request, :build_log, :user, :repo, :id
+
+    def update_builds!
       return 'No pull-request found' unless pull_request
 
-      build_log = PullRequest::BuildLog.new(pull_request.description)
-      build_log.add_build!(sha, status, date)
+      build_log.add_build!(sha, date)
 
       update_pull_request(description: build_log.to_s)
     end
@@ -20,7 +24,7 @@ module PullRequest
     def update_pull_request(updated_attributes)
       PR.bitbucket_client.repos.pullrequests.update(user,
                                                     repo,
-                                                    pull_request.id,
+                                                    id,
                                                     updatable_attributes.merge(updated_attributes))
     end
   end

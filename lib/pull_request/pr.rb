@@ -13,6 +13,10 @@ class PullRequest::PR
     @bitbucket_data = bitbucket_data
   end
 
+  def exists?
+    ! id.nil?
+  end
+
   def id
     @id ||= bitbucket_data.id
   end
@@ -21,13 +25,21 @@ class PullRequest::PR
     @description ||= bitbucket_data.description
   end
 
+  def build_log
+    @build_log ||= PullRequest::BuildLog.new(description)
+  end
+
+  def new_build!(build_payload)
+    update_approval!(build_payload)
+    update_builds!(build_payload)
+  end
+
   def update_approval!(json_payload)
     PullRequest::Approver.new(json_payload.merge(pull_request: self)).update_approval!
   end
 
-  def update_build!(sha, status, date = nil)
-    PullRequest::Updater.new(user: user, repo: repo, sha: sha, pull_request: self).
-      update_build!(sha, status, date)
+  def update_builds!(json_payload)
+    PullRequest::Updater.new(json_payload.merge(pull_request: self)).update_builds!
   end
 
   def bitbucket_data
