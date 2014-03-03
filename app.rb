@@ -17,11 +17,14 @@ post '/bitbucket/post_pull_request' do
   request_body = request.body.read
   logger.info "BITBUCKET post_hook: #{request_body}"
   hook_request_parser = PullRequest::HookRequestParser.new(request_body)
-  build = Build.new(hook_request_parser.attributes_hash)
 
-  if hook_request_parser.can_trigger_a_build? && build.new?
-    logger.info "JENKINS build_submitted: #{build.attributes_hash}"
+  build = if hook_request_parser.can_trigger_a_build?
+            Build.new(hook_request_parser.attributes_hash)
+          end
+
+  if build && build.new?
     build.submit
+    logger.info "JENKINS build_submitted: #{build.attributes_hash}"
   end
 end
 

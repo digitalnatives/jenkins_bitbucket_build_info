@@ -24,14 +24,7 @@ class PullRequest::HookRequestParser
   end
 
   def sha
-    case hook_type
-    when :created
-      body.source.commit[:hash]
-    when :updated
-      body.source.commit[:hash]
-    else
-      body.source.commit[:hash]
-    end
+    body.source.commit[:hash]
   end
 
   def attributes_hash
