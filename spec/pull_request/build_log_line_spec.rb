@@ -34,6 +34,14 @@ describe BuildLogLine do
     end
   end
 
+  describe "#formatted_date" do
+    let(:build_log_line_with_nil_date) { BuildLogLine.from_status(sha: "some_sha") }
+
+    it "is nil when date is nil" do
+      expect(build_log_line_with_nil_date.formatted_date).to be_nil
+    end
+  end
+
   describe '#eql?' do
     let(:line_1) { described_class.from_status(sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2013/12/31') }
     let(:line_2) { described_class.from_status(sha: 'a4cad4e4c24ab53a725fe8953c2d587dd34573e1', date: '2014/01/10') }

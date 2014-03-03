@@ -27,7 +27,7 @@ class BuildLogLine
   end
 
   def formatted_date(format = DATE_FORMAT)
-    date.strftime(format)
+    date.strftime(format) if date
   end
 
   def <=>(anOther)
