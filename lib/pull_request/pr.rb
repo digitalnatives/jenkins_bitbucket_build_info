@@ -53,12 +53,12 @@ class PullRequest::PR
     bitbucket_client.repos.pullrequests.all(user, repo)[:values]
   end
 
-  def self.find(sha, user = nil, repo = nil)
+  def self.find(sha, user, repo)
     found_pull_request = find_bitbucket_pull_request(sha, user, repo)
     new(user, repo, sha, found_pull_request) if found_pull_request
   end
 
-  def self.find_bitbucket_pull_request(sha, user = nil, repo = nil)
+  def self.find_bitbucket_pull_request(sha, user, repo)
     all(user, repo).find { |pr| sha.start_with?(pr.source.commit[:hash]) }
   end
 

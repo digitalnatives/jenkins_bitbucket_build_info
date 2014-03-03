@@ -35,7 +35,7 @@ get '/jenkins/post_build' do
   Build.new(build_payload).save
 
   # Look for an open pull request with this SHA and approve it.
-  pull_request = PullRequest::PR.find(build_payload[:sha])
+  pull_request = PullRequest::PR.find(build_payload[:sha], build_payload[:user], build_payload[:repo])
   pull_request.new_build!(build_payload) if pull_request.exists?
 end
 
