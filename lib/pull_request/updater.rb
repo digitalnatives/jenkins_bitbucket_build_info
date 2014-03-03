@@ -13,6 +13,9 @@ module PullRequest
       build_log.add_build!(sha, date)
 
       update_pull_request(description: build_log.to_s)
+      "UPDATE #{user}/#{repo}/pull-request/#{id}"
+    rescue BitBucket::Error::NotFound, BitBucket::Error::ServiceError => e
+      e.message
     end
 
     private
