@@ -16,10 +16,6 @@ class PullRequest::PR
     @bitbucket_data = bitbucket_data
   end
 
-  def exists?
-    ! id.nil?
-  end
-
   def id
     @id ||= bitbucket_data.id
   end

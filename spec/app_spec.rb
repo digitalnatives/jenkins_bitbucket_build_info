@@ -70,20 +70,16 @@ describe 'Application' do
         }
       }
 
-      before do
-        PullRequest::PR.stub(find: pull_request)
-        pull_request.stub(:exists?).and_return(true)
-      end
-
       it "updates the pull request that it finds" do
+        PullRequest::PR.stub(find: pull_request)
         pull_request.should_receive(:new_build!).with(build_parameters)
         get '/jenkins/post_build', build_parameters
         expect(last_response).to be_ok
       end
 
       it "does not update any pull request if it can't find one" do
-        pull_request.stub(:exists?).and_return(false)
-        expect(pull_request).not_to receive(:new_build!)
+        PullRequest::PR.stub(:find)
+        expect(PullRequest::PR.any_instance).not_to receive(:new_build!)
         get '/jenkins/post_build', build_parameters
       end
     end
