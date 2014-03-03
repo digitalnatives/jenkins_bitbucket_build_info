@@ -8,7 +8,7 @@ module PullRequest
     def_delegators :pull_request, :user, :repo, :id
 
     def build_passed?
-      !!succeeded
+      status == 'success'
     end
 
     def update_approval!

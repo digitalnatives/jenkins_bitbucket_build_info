@@ -17,9 +17,4 @@ class CommitStatus
       status:     params.fetch('status').to_s.downcase
     })
   end
-
-  def succeeded?
-    status == 'success'
-  end
-
 end
