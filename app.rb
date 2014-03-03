@@ -13,7 +13,9 @@ end
 
 post '/bitbucket/post_pull_request' do
   content_type 'text/plain'
-  hook_request_parser = PullRequest::HookRequestParser.new(request.body.read)
+  request_body = request.body.read
+  logger.info "BITBUCKET post_hook: #{request_body}"
+  hook_request_parser = PullRequest::HookRequestParser.new(request_body)
   build = Build.new(hook_request_parser.attributes_hash)
 
   build.submit if hook_request_parser.can_trigger_a_build? && build.new?
