@@ -7,10 +7,11 @@ describe PullRequest::Updater do
   let(:bitbucket_data) {
     Hashie::Mash.new(JSON.parse(File.read("spec/fixtures/bitbucket/pull_request/pull_request.json")))
   }
-  let(:pull_request) { PullRequest::PR.new(user, repo, sha, bitbucket_data) }
+  let(:pull_request) { PullRequest::PR.new(user, repo, sha, badge_url, bitbucket_data) }
   let(:description) { "Pull request description" }
   let(:user) { "user" }
   let(:repo) { "repo" }
+  let(:badge_url) { "http://badge_url" }
   let(:pull_request_updater) { PullRequest::Updater.new(date: date,
                                                         sha: sha,
                                                         pull_request: pull_request) }

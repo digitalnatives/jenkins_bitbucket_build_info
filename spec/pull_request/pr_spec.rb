@@ -8,11 +8,12 @@ describe PullRequest::PR do
   let(:user) { "user" }
   let(:repo) { "repo" }
   let(:sha) { "sha" }
+  let(:badge_url) { "http://badge_url" }
 
   PR_DATA_PATH = File.expand_path('../../fixtures/bitbucket/pull_request/pull_request.json', __FILE__)
   let(:bitbucket_data) { Hashie::Mash.new JSON.parse(File.read(PR_DATA_PATH)) }
 
-  subject { described_class.new(user, repo, sha, bitbucket_data) }
+  subject { described_class.new(user, repo, sha, badge_url, bitbucket_data) }
 
   [:id, :description].each do |method|
     describe "##{method}" do

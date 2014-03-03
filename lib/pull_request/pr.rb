@@ -7,13 +7,14 @@ require 'pull_request/updater'
 # colisions with the module name
 class PullRequest::PR
 
-  attr_reader :user, :repo, :sha
+  attr_reader :user, :repo, :sha, :attr_reader
 
-  def initialize(user, repo, sha, bitbucket_data = nil)
+  def initialize(user, repo, sha, badge_url, bitbucket_data = nil)
     @user = user
     @repo = repo
     @sha = sha
     @bitbucket_data = bitbucket_data
+    @badge_url = badge_url
   end
 
   def id
@@ -25,7 +26,7 @@ class PullRequest::PR
   end
 
   def build_log
-    @build_log ||= PullRequest::BuildLog.new(description, user, repo)
+    @build_log ||= PullRequest::BuildLog.new(description, user, repo, badge_url)
   end
 
   def new_build!(build_payload)
@@ -51,7 +52,11 @@ class PullRequest::PR
 
   def self.find(sha, user, repo)
     found_pull_request = find_bitbucket_pull_request(sha, user, repo)
-    new(user, repo, sha, found_pull_request) if found_pull_request
+
+    if found_pull_request
+      badge_url = yield if block_given?
+      new(user, repo, sha, found_pull_request, badge_url)
+    end
   end
 
   def self.find_bitbucket_pull_request(sha, user, repo)

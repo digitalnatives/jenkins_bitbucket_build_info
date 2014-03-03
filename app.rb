@@ -37,8 +37,14 @@ get '/jenkins/post_build' do
 
   Build.new(build_payload).save
 
+  user = build_payload[:user]
+  repo = build_payload[:repo]
+  sha = build_payload[:sha]
+
   # Look for an open pull request with this SHA and approve it.
-  pull_request = PullRequest::PR.find(build_payload[:sha], build_payload[:user], build_payload[:repo])
+  pull_request = PullRequest::PR.find(sha, user, repo) do
+    url("/#{user}/#{repo}/%{sha}/badge")
+  end
   pull_request.new_build!(build_payload) if pull_request
 end
 

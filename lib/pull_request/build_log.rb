@@ -2,12 +2,13 @@ require 'pull_request/build_log_line'
 
 module PullRequest
   class BuildLog
-    attr_reader :build_lines, :normal_description, :repo_full_name
+    attr_reader :build_lines, :normal_description, :repo_full_name, :badge_url
 
     SEPARATOR = "\n\n### Jenkins build statuses\n\n".freeze
     LINE_FORMAT = "%{badge_img} %{sha_link} %{date}"
 
-    def initialize(description_string, user, repo)
+    def initialize(description_string, user, repo, badge_url)
+      @badge_url = badge_url
       @repo_full_name = "#{user}/#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
       @build_lines = build_lines.to_s.strip.each_line.map do |line|
@@ -39,8 +40,7 @@ module PullRequest
     end
 
     def badge_img(build_line)
-      #TODO prepend badge path with app url
-      "![badge](/#{repo_full_name}/#{build_line.sha}/badge)"
+      "![badge](#{badge_url})" % { sha: build_line.sha }
     end
 
     def sha_link(build_line)
