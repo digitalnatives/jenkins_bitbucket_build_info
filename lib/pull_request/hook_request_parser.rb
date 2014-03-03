@@ -28,7 +28,7 @@ class PullRequest::HookRequestParser
     when :created
       body.source.commit[:hash]
     when :updated
-      body.source.commit.sha
+      body.source.commit[:hash]
     else
       body.source.commit[:hash]
     end
