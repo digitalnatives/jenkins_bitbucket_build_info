@@ -9,7 +9,12 @@ module ApplicationHelpers
   end
 
   def bitbucket
-    @bitbucket ||= BitBucket.new({basic_auth: ENV['BITBUCKET_CREDENTIALS']})
+    @bitbucket ||= if ENV['BITBUCKET_OAUTH_TOKEN'] && ENV['BITBUCKET_OAUTH_SECRET']
+                     BitBucket.new(oauth_token: ENV['BITBUCKET_OAUTH_TOKEN'],
+                                   oauth_secret: ENV['BITBUCKET_OAUTH_SECRET'])
+                   else
+                     BitBucket.new(basic_auth: ENV['BITBUCKET_CREDENTIALS'])
+                   end
   end
 
   def build_key(user: nil, repo: nil, sha: nil, **other)
