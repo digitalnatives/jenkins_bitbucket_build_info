@@ -7,10 +7,10 @@ module PullRequest
     SEPARATOR = "\n\n### Jenkins build statuses\n\n".freeze
     LINE_FORMAT = "%{badge_img} %{sha_link} %{date}"
 
-    def initialize(description_string, repo_full_name)
-      @repo_full_name = repo_full_name
+    def initialize(description_string, user, repo)
+      @repo_full_name = "#{user}/#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
-      @build_lines = build_lines.strip.each_line.map do |line|
+      @build_lines = build_lines.to_s.strip.each_line.map do |line|
                        BuildLogLine.from_string(line.strip)
                      end.to_set
     end

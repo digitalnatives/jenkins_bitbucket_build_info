@@ -29,7 +29,7 @@ class PullRequest::PR
   end
 
   def build_log
-    @build_log ||= PullRequest::BuildLog.new(description)
+    @build_log ||= PullRequest::BuildLog.new(description, user, repo)
   end
 
   def new_build!(build_payload)
