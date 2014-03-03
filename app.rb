@@ -3,6 +3,7 @@ require 'json'
 require 'application_helpers'
 require 'pull_request/approver'
 require 'pull_request/hook_request_parser'
+require 'pull_request/pr'
 require 'build'
 
 helpers ApplicationHelpers

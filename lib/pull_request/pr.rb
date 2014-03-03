@@ -1,4 +1,7 @@
 require 'json'
+require 'pull_request/approver'
+require 'pull_request/build_log'
+require 'pull_request/updater'
 
 # This name is terrible :( ... But I wanted to avoid name
 # colisions with the module name
