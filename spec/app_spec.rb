@@ -70,6 +70,10 @@ describe 'Application' do
         }
       }
 
+      before do
+        CommitStatus.stub_chain(:new, :to_h).and_return(build_parameters)
+      end
+
       it "updates the pull request that it finds" do
         PullRequest::PR.stub(find: pull_request)
         pull_request.should_receive(:new_build!).with(build_parameters)
