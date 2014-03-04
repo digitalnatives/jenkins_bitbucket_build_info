@@ -32,7 +32,7 @@ describe PullRequest::HookRequestParser do
       end
 
       specify "updated" do
-        expect(updated_hook_parser.username).to eq("evzijst")
+        expect(updated_hook_parser.username).to eq("detkin")
       end
     end
   end
@@ -41,11 +41,11 @@ describe PullRequest::HookRequestParser do
   describe "#repository" do
     context "is parsed correctly when a pull request is" do
       specify "created" do
-        expect(created_hook_parser.repository).to eq("evzijst/bitbucket2")
+        expect(created_hook_parser.repository).to eq("bitbucket2")
       end
 
       specify "updated" do
-        expect(updated_hook_parser.repository).to eq("detkin/test")
+        expect(updated_hook_parser.repository).to eq("test")
       end
     end
   end

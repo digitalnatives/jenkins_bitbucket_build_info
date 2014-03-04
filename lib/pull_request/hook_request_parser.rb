@@ -16,15 +16,19 @@ class PullRequest::HookRequestParser
   # The next methods won't work for all cases. The cases that they
   # won't work do not concern our interests, so this should be enough.
   def username
-    body.author.username
+    destination.split('/').first
   end
 
   def repository
+    destination.split('/').last
+  end
+
+  def destination
     body.destination.repository.full_name
   end
 
   def sha
-    body.source.commit[:hash]
+    body.source.commit[:hash][0..11]
   end
 
   def attributes_hash
