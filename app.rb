@@ -51,6 +51,6 @@ end
 get '/:user/:repo/:sha/badge' do |user, repo, sha|
   build = Build.new(user: user, repo: repo, sha: sha)
 
-  logger.info "Build status of #{user}/#{repo}@#{sha} #{buil.status}"
+  logger.info "Build status of #{user}/#{repo}@#{sha} #{build.status}"
   send_file File.join(settings.public_folder, 'status', "#{build.status}.png")
 end
