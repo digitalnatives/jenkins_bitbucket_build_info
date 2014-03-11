@@ -11,7 +11,7 @@ module PullRequest
       @badge_url = badge_url
       @repo_full_name = "#{user}/#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
-      @build_lines = build_lines.to_s.strip.each_line.map do |line|
+      @build_lines = build_lines.to_s.strip.each_line("\n\n").map do |line|
                        BuildLogLine.from_string(line.strip)
                      end.to_set
     end
@@ -31,12 +31,12 @@ module PullRequest
 
     def log
       build_lines.map do |bl|
-        LINE_FORMAT % {
+        (LINE_FORMAT % {
           badge_img: badge_img(bl),
           sha_link: sha_link(bl),
           date: bl.formatted_date
-        }
-      end.join("\n")
+        }).strip
+      end.join("\n\n")
     end
 
     def badge_img(build_line)
