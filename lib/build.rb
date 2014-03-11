@@ -2,6 +2,10 @@
 class Build
   attr_reader :attributes_hash
 
+  STATUSES = %w(success failure unknown).freeze
+  SUCCESS = STATUSES.first
+  UNKNOWN = STATUSES.last
+
   def initialize(attributes_hash)
     @attributes_hash = attributes_hash
   end
@@ -23,16 +27,24 @@ class Build
     ApplicationHelpers.build_key(attributes_hash)
   end
 
-  def success
-    @success ||= self.class.redis.hget(key, :succeeded)
+  def passed?
+    status == Build::SUCCESSS
+  end
+
+  def stored_status
+    @stored_status ||= self.class.redis.hget(key, :status)
   end
 
   def status
-    case success
-    when 'true'  then 'success'
-    when 'false' then 'failure'
-    else 'unknown'
+    if Build.known_status?(stored_status)
+      stored_status
+    else
+      Build::UNKNOWN
     end
+  end
+
+  def self.known_status?(status)
+    STATUSES.include? status
   end
 
   def self.redis
