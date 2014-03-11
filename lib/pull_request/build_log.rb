@@ -4,13 +4,14 @@ module PullRequest
   class BuildLog
     attr_reader :build_lines, :normal_description, :repo_full_name, :badge_url
 
-    SEPARATOR = "\n\n### Jenkins build statuses\n\n".freeze
+    SEPARATOR = "### Jenkins build statuses".freeze
     LINE_FORMAT = "%{badge_img} %{sha_link} %{date}"
 
     def initialize(description_string, user, repo, badge_url)
       @badge_url = badge_url
       @repo_full_name = "#{user}/#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
+      @normal_description.rstrip!
       @build_lines = build_lines.to_s.strip.each_line("\n\n").map do |line|
                        BuildLogLine.from_string(line.strip)
                      end.to_set
@@ -21,7 +22,7 @@ module PullRequest
     end
 
     def to_s
-      [normal_description, log].join(SEPARATOR).concat("\n")
+      [normal_description, log].join("\n\n#{SEPARATOR}\n\n").concat("\n")
     end
     alias_method :description, :to_s
 
