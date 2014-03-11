@@ -24,7 +24,7 @@ class Build
   end
 
   def success
-    @success ||= redis.hget(key, :succeeded)
+    @success ||= self.class.redis.hget(key, :succeeded)
   end
 
   def status
