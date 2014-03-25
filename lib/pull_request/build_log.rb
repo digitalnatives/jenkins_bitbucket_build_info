@@ -2,15 +2,17 @@ require 'pull_request/build_log_line'
 
 module PullRequest
   class BuildLog
-    attr_reader :build_lines, :normal_description, :repo_full_name
+    attr_reader :build_lines, :normal_description, :repo_full_name, :badge_url
 
-    SEPARATOR = "\n\n### Jenkins build statuses\n\n".freeze
+    SEPARATOR = "### Jenkins build statuses".freeze
     LINE_FORMAT = "%{badge_img} %{sha_link} %{date}"
 
-    def initialize(description_string, repo_full_name)
-      @repo_full_name = repo_full_name
+    def initialize(description_string, user, repo, badge_url)
+      @badge_url = badge_url
+      @repo_full_name = "#{user}/#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
-      @build_lines = build_lines.strip.each_line.map do |line|
+      @normal_description.rstrip!
+      @build_lines = build_lines.to_s.strip.each_line("\n\n").map do |line|
                        BuildLogLine.from_string(line.strip)
                      end.to_set
     end
@@ -20,7 +22,7 @@ module PullRequest
     end
 
     def to_s
-      [normal_description, log].join(SEPARATOR).concat("\n")
+      [normal_description, log].join("\n\n#{SEPARATOR}\n\n").concat("\n")
     end
     alias_method :description, :to_s
 
@@ -30,17 +32,16 @@ module PullRequest
 
     def log
       build_lines.map do |bl|
-        LINE_FORMAT % {
+        (LINE_FORMAT % {
           badge_img: badge_img(bl),
           sha_link: sha_link(bl),
           date: bl.formatted_date
-        }
-      end.join("\n")
+        }).strip
+      end.join("\n\n")
     end
 
     def badge_img(build_line)
-      #TODO prepend badge path with app url
-      "![badge](/#{repo_full_name}/#{build_line.sha}/badge)"
+      "![badge](#{badge_url})" % { sha: build_line.sha }
     end
 
     def sha_link(build_line)

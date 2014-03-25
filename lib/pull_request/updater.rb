@@ -1,39 +1,34 @@
 require 'ostruct'
+require 'forwardable'
 
 module PullRequest
   class Updater < OpenStruct
-    def pull_request
-      @pull_request ||= all_pull_requests.find do |pr|
-        sha.start_with?(pr.source.commit[:hash])
-      end
-    end
+    extend Forwardable
 
-    def update_build(commit_hash, status, date = nil)
-      build_log = PullRequest::BuildLog.new(pull_request.description)
-      build_log.add_build!(commit_hash, status, date)
+    def_delegators :pull_request, :build_log, :user, :repo, :id
+
+    def update_builds!
+      return 'No pull-request found' unless pull_request
+
+      build_log.add_build!(sha, date)
 
       update_pull_request(description: build_log.to_s)
+      "UPDATE #{user}/#{repo}/pull-request/#{id}"
+    rescue BitBucket::Error::NotFound, BitBucket::Error::ServiceError => e
+      e.message
     end
 
     private
 
-    def pull_request_updatable_attributes
-      pull_request.select { |k, v| %w(close_source_branch title destination destination).include?(k) }
+    def updatable_attributes
+      pull_request.bitbucket_data.select { |k, v| %w(close_source_branch title destination).include?(k) }
     end
 
     def update_pull_request(updated_attributes)
-      bitbucket.repos.pullrequests.update(user,
-                                          repo,
-                                          pull_request.id,
-                                          pull_request_updatable_attributes.merge(updated_attributes))
-    end
-
-    def all_pull_requests
-      bitbucket.repos.pullrequests.all(user, repo)[:values]
-    end
-
-    def bitbucket
-      ApplicationHelpers.bitbucket
+      PR.bitbucket_client.repos.pullrequests.update(user,
+                                                    repo,
+                                                    id,
+                                                    updatable_attributes.merge(updated_attributes))
     end
   end
 end

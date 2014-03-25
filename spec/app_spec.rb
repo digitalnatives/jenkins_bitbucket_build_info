@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pull_request/pr'
 
 describe 'Application' do
 
@@ -10,9 +11,40 @@ describe 'Application' do
   end
 
   describe 'POST /bitbucket/post_pull_request' do
-    it "fails because the action is not implemented" do
-      post '/bitbucket/post_pull_request'
-      expect(last_response.status).to eql 501
+
+    def post_to_hook
+      post '/bitbucket/post_pull_request', File.read("spec/fixtures/bitbucket/pull_request/created.json")
+    end
+
+    let(:hook_request_parser) { double(:hook_request_parser).as_null_object }
+    let(:build) { double(:build).as_null_object }
+
+    before do
+      Build.stub(new: build)
+      PullRequest::HookRequestParser.stub(new: hook_request_parser)
+    end
+
+    context "does not submit a new build when" do
+      it "has new commits which have already been built" do
+        hook_request_parser.stub(can_trigger_a_build?: true)
+        build.stub(new?: false)
+        expect(build).not_to receive(:submit)
+        post_to_hook
+      end
+
+      it "has no new commits" do
+        hook_request_parser.stub(can_trigger_a_build?: false)
+        expect(build).not_to receive(:submit)
+        post_to_hook
+      end
+    end
+
+    it "submits a new build and returns OK" do
+      hook_request_parser.stub(can_trigger_a_build?: true)
+      build.stub(new?: true)
+      expect(build).to receive(:submit)
+      post_to_hook
+      expect(last_response).to be_ok
     end
   end
 
@@ -26,15 +58,8 @@ describe 'Application' do
     end
 
     context 'when payload is present' do
-      let(:pull_request_approver) { double(:pull_request_approver) }
-
-      before do
-        pull_request_approver.stub(:update_approval!)
-      end
-
-      it 'returns OK' do
-        PullRequest::Approver.stub(new: pull_request_approver)
-        get '/jenkins/post_build', {
+      let(:pull_request) { double(:pull_request) }
+      let(:build_parameters) { {
           sha:        '123456789abcdef',
           job_name:   'test',
           job_number: 'b123',
@@ -43,7 +68,23 @@ describe 'Application' do
           branch:     'master',
           status:     'success',
         }
+      }
+
+      before do
+        CommitStatus.stub_chain(:new, :to_h).and_return(build_parameters)
+      end
+
+      it "updates the pull request that it finds" do
+        PullRequest::PR.stub(find: pull_request)
+        pull_request.should_receive(:new_build!).with(build_parameters)
+        get '/jenkins/post_build', build_parameters
         expect(last_response).to be_ok
+      end
+
+      it "does not update any pull request if it can't find one" do
+        PullRequest::PR.stub(:find)
+        expect(PullRequest::PR.any_instance).not_to receive(:new_build!)
+        get '/jenkins/post_build', build_parameters
       end
     end
   end

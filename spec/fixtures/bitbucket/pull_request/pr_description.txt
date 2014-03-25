@@ -2,5 +2,6 @@ Not build related description
 
 ### Jenkins build statuses
 
-![badge](/user/repo/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf/badge) [commit details](https://bitbucket.org/user/repo/commits/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf) 2014/02/21
-![badge](/user/repo/a4cad4e4c24ab53a725fe8953c2d587dd34573e1/badge) [commit details](https://bitbucket.org/user/repo/commits/a4cad4e4c24ab53a725fe8953c2d587dd34573e1) 2014/02/20
+![badge](http://badge_url/user/repo/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf/badge) [commit details](https://bitbucket.org/user/repo/commits/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf) 2014/02/21
+
+![badge](http://badge_url/user/repo/a4cad4e4c24ab53a725fe8953c2d587dd34573e1/badge) [commit details](https://bitbucket.org/user/repo/commits/a4cad4e4c24ab53a725fe8953c2d587dd34573e1) 2014/02/20

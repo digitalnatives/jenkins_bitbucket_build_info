@@ -5,9 +5,9 @@ gem 'sinatra'
 gem 'redis'
 gem 'bitbucket_rest_api', github: 'digitalnatives/bitbucket'
 gem 'dotenv'
+gem 'passenger'
 
 group :development do
-  gem 'shotgun'
   gem 'debugger'
   gem 'guard-rspec', require: false
 end

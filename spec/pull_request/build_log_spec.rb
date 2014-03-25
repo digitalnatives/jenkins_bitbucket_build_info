@@ -5,9 +5,11 @@ describe PullRequest::BuildLog do
   PR_DESCRIPTION_PATH = File.expand_path('../../fixtures/bitbucket/pull_request/pr_description.txt', __FILE__)
 
   let(:description_string) { File.read(PR_DESCRIPTION_PATH) }
-  let(:repo_full_name) { "user/repo" }
+  let(:repo) { "repo" }
+  let(:user) { "user" }
+  let(:badge_url) { "http://badge_url/#{user}/#{repo}/%{sha}/badge" }
 
-  subject { described_class.new(description_string, repo_full_name) }
+  subject { described_class.new(description_string, user, repo, badge_url) }
 
   describe ".initialize" do
     let(:build_statuses) do
@@ -29,6 +31,10 @@ describe PullRequest::BuildLog do
       build_log_lines = build_statuses.map {|l| BuildLogLine.from_status(l) }
 
       expect(subject.build_lines.to_a).to match_array build_log_lines
+    end
+
+    it "supports not having build lines" do
+      described_class.new("Not build related description", user, repo, badge_url)
     end
   end
 
