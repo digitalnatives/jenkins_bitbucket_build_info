@@ -19,7 +19,7 @@ class Build
   end
 
   def submit
-    #TODO submit to jenkins
+    ApplicationHelpers.jenkins.job.build(@attributes_hash[:username]+"-"+@attributes_hash[:repository], {SHA: @attributes_hash[:sha]})
     save
   end
 
