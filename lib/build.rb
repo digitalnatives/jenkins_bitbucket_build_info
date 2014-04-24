@@ -19,7 +19,7 @@ class Build
   end
 
   def submit
-    ApplicationHelpers.jenkins.job.build(@attributes_hash[:username]+"-"+@attributes_hash[:repository], {SHA: @attributes_hash[:sha]})
+    ApplicationHelpers.jenkins.job.build(@attributes_hash[:user]+"-"+@attributes_hash[:repo], {SHA: @attributes_hash[:sha]})
     save
   end
 
