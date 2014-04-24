@@ -11,7 +11,7 @@ module PullRequest
       @badge_url = badge_url
       @repo_full_name = "#{user}/#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
-      @normal_description.rstrip!
+      @normal_description.rstrip! if @normal_description
       @build_lines = build_lines.to_s.strip.each_line("\n\n").map do |line|
                        BuildLogLine.from_string(line.strip)
                      end.to_set

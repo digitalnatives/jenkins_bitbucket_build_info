@@ -32,6 +32,8 @@ get '/jenkins/post_build' do
   content_type 'text/plain'
   halt 400, 'Must provide commit sha!' unless params[:sha]
 
+  params["status"] = ApplicationHelpers.jenkins.job.get_build_details(params[:job_name], params[:job_number])["result"]
+
   build_payload = CommitStatus.new(params).to_h
   logger.info "JENKINS post_build: #{build_payload.to_json}"
 
@@ -43,6 +45,7 @@ get '/jenkins/post_build' do
 
   # Look for an open pull request with this SHA and approve it.
   pull_request = PullRequest::PR.find(sha, user, repo) do
+    logger.info "Approving sha: #{sha}!"
     url("/#{user}/#{repo}/%{sha}/badge")
   end
   pull_request.new_build!(build_payload) if pull_request
