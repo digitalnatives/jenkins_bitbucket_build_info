@@ -10,7 +10,7 @@ module ApplicationHelpers
 
   def jenkins
     @jenkins ||= JenkinsApi::Client.new(
-      :server_url => ENV['JENKINS_URL'],
+      :server_url => ENV['JENKINS_URL'] || '0.0.0.0',
       :username => ENV['JENKINS_USERNAME'],
       :password => ENV['JENKINS_PASSWORD']
     )
