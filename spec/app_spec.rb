@@ -72,6 +72,12 @@ describe 'Application' do
 
       before do
         CommitStatus.stub_chain(:new, :to_h).and_return(build_parameters)
+
+        class JenkinsApi::Client::Job
+          def get_build_details(job_name,job_number)
+            {status: "SUCCESS"}
+          end
+        end
       end
 
       it "updates the pull request that it finds" do

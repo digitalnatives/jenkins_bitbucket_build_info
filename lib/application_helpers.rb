@@ -8,6 +8,14 @@ module ApplicationHelpers
     @redis ||= Redis.new # uses ENV['REDIS_URL'] by default
   end
 
+  def jenkins
+    @jenkins ||= JenkinsApi::Client.new(
+      :server_url => ENV['JENKINS_URL'] || '0.0.0.0',
+      :username => ENV['JENKINS_USERNAME'],
+      :password => ENV['JENKINS_PASSWORD']
+    )
+  end
+
   def bitbucket
     @bitbucket ||= if ENV['BITBUCKET_OAUTH_TOKEN'] && ENV['BITBUCKET_OAUTH_SECRET']
                      BitBucket.new(oauth_token: ENV['BITBUCKET_OAUTH_TOKEN'],
