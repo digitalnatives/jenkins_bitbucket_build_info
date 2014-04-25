@@ -32,6 +32,7 @@ get '/jenkins/post_build' do
   content_type 'text/plain'
   halt 400, 'Must provide commit sha!' unless params[:sha]
 
+  params["user"], params["repo"] = params[:job_name].split('-',2)
   params["status"] = ApplicationHelpers.jenkins.job.get_build_details(params[:job_name], params[:job_number])["result"]
 
   build_payload = CommitStatus.new(params).to_h
