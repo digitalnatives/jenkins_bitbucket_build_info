@@ -17,17 +17,11 @@
         <h3>Setup Jenkins</h3>
         <p>
         To use this service, add a <strong>post_build</strong> command to your
-        Jenkins job!<br> Also you need to ensure that <code>BUILD_STATUS</code>
-        environmental variable is set to <em>"success"</em> if the build passed
+        Jenkins job!
         </p>
 
         <fieldset>
           <legend>Jenkins post build cURL command</legend>
-          <div class="row">
-            <input name="user" placeholder="username" type="text" />
-            <input name="repo" placeholder="repository" type="text" />
-          </div>
-
           <div class="row">
             <pre id="jenkins_template"></pre>
           </div>
@@ -52,12 +46,10 @@
 
           template = function(user, repo) {
             return 'curl "' + window.location + 'jenkins/post_build?' +
-                  'user=' + user +
-                  '&repo=' + repo +
-                  '&branch=$GIT_BRANCH' +
+                  'branch=$GIT_BRANCH' +
                   '&sha=$GIT_COMMIT' +
-                  '&status=$BUILD_STATUS' +
-                  '&job=$BUILD_NUMBER"'
+                  '&job_name=$JOB_NAME' +
+                  '&job_number=$BUILD_NUMBER"'
           },
 
           updateTemplate = function(user, repo) {
