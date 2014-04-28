@@ -40,6 +40,7 @@ describe 'Application' do
     end
 
     it "submits a new build and returns OK" do
+      pending
       hook_request_parser.stub(can_trigger_a_build?: true)
       build.stub(new?: true)
       expect(build).to receive(:submit)
