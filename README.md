@@ -19,6 +19,7 @@ On your Jenkins job:
   * add a **string paramter** to the builds named `SHA` with the default value for the branch you want to build by default.
   * add a **build step** to the top that will checkout the current SHA: `git checkout $SHA`
   * add a **Post Build Step** wich matches anything with `OR` and with the shell script:
+
     ```
     curl "http://application_url/jenkins/post_build?branch=$GIT_BRANCH&sha=$SHA&job_number=$BUILD_NUMBER&job_name=$JOB_NAME"
     ```
