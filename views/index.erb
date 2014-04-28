@@ -47,7 +47,7 @@
           template = function(user, repo) {
             return 'curl "' + window.location + 'jenkins/post_build?' +
                   'branch=$GIT_BRANCH' +
-                  '&sha=$GIT_COMMIT' +
+                  '&sha=$SHA' +
                   '&job_name=$JOB_NAME' +
                   '&job_number=$BUILD_NUMBER"'
           },
