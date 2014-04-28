@@ -22,10 +22,31 @@ post '/bitbucket/post_pull_request' do
             Build.new(hook_request_parser.attributes_hash)
           end
 
+
   if build && build.new?
     build.submit
+
+    username = hook_request_parser.username
+    repository = hook_request_parser.repository
+    sha = hook_request_parser.sha
+
+    build_payload = CommitStatus.new({
+      "job_name" => "",
+      "job_number" => "",
+      "branch" => "",
+      "status" => "unknown",
+      "sha" => sha,
+      "user" => username,
+      "repo" => repository
+    }).to_h
+    pull_request = PullRequest::PR.find(sha, username, repository)do
+      url("/#{username}/#{repository}/%{sha}/badge")
+    end
+    pull_request.update_builds!(build_payload)
+
     logger.info "JENKINS build_submitted: #{build.attributes_hash}"
   end
+
 end
 
 get '/jenkins/post_build' do
