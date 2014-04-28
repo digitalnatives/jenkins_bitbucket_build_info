@@ -74,7 +74,7 @@ get '/jenkins/post_build' do
 end
 
 get '/:user/:repo/:sha/badge' do |user, repo, sha|
-  cache_control :private, :must_revalidate, :max_age => 0
+  cache_control :no_cache, :private, :must_revalidate, :max_age => 0
   build = Build.new(user: user, repo: repo, sha: sha)
 
   logger.info "Build status of #{user}/#{repo}@#{sha} #{build.status}"
