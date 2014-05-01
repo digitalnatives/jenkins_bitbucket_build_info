@@ -18,7 +18,8 @@ module PullRequest
     end
 
     def add_build!(sha, date = nil)
-      build_lines << BuildLogLine.from_status(sha: sha, date: date)
+      log_line = BuildLogLine.from_status(sha: sha, date: date)
+      build_lines << log_line unless build_lines.select{ |line| line.sha == log_line.sha }.length > 0
     end
 
     def to_s

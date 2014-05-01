@@ -9,9 +9,9 @@ This application serves as a mediator between Bitbucket and Jenkins:
 
 ## Bitbucket setup
 
-  * In the repository you want to be monitored create a [Post Pull Request Hook](https://confluence.atlassian.com/display/BITBUCKET/POST+hook+management) that points to `http://application_url/bitbucket/post_pull_request`
   * Create a user that will be editing / approving pull request
   * Make sure that `BITBUCKET_CREDENTIALS` is available with the previously created users credentials
+  * In the repository you want to be monitored create a [Post Pull Request Hook](https://confluence.atlassian.com/display/BITBUCKET/POST+hook+management) that points to `http://application_url/bitbucket/post_pull_request`
 
 ## Jenkins Setup
 On your Jenkins job:
@@ -20,16 +20,10 @@ On your Jenkins job:
   * add a **build step** to the top that will checkout the current SHA: `git checkout $SHA`
   * add a **Post Build Step** wich matches anything with `OR` and with the shell script:
 
-    ```bash
-    curl "http://application_url/jenkins/post_build
-    ?user=repository_owner_name
-    &repo=repository
-    &branch=$GIT_BRANCH
-    &sha=$GIT_COMMIT
-    &job_number=$BUILD_NUMBER
-    &job_name=$JOB_NAME"
     ```
-  *  Make sure that `JENKINS_USERNAME` `JENKINS_PASSWORD` and `JENKINS_URL` are available
+    curl "http://application_url/jenkins/post_build?branch=$GIT_BRANCH&sha=$SHA&job_number=$BUILD_NUMBER&job_name=$JOB_NAME"
+    ```
+  *  Make sure that `JENKINS_USERNAME` `JENKINS_PASSWORD` and `JENKINS_URL` are available for the application
 
 ## Environmental variables
 Make sure that these environmental variables are available for the applcation:
