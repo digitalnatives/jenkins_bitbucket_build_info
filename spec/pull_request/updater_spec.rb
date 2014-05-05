@@ -14,11 +14,13 @@ describe PullRequest::Updater do
   let(:badge_url) { "http://badge_url" }
   let(:pull_request_updater) { PullRequest::Updater.new(date: date,
                                                         sha: sha,
-                                                        pull_request: pull_request) }
+                                                        pull_request: pull_request,
+                                                        job_number: job_number) }
   let(:build_log) { double(:build_log).as_null_object }
   let(:sha) { "abcde123456789" }
   let(:status) { "passed" }
   let(:date) { Time.now.to_s }
+  let(:job_number) { "1" }
 
   describe '#update_builds!' do
     before do
@@ -33,7 +35,7 @@ describe PullRequest::Updater do
     end
 
     it "adds the build to the build_log object" do
-      build_log.should_receive(:add_build!).with(sha, date)
+      build_log.should_receive(:add_build!).with(sha, date, job_number)
       pull_request_updater.update_builds!
     end
 

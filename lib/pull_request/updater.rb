@@ -6,11 +6,17 @@ module PullRequest
     extend Forwardable
 
     def_delegators :pull_request, :build_log, :user, :repo, :id
+    attr_reader :job_number
+
+    def initialize(payload)
+      super
+      @job_number = payload[:job_number] || ""
+    end
 
     def update_builds!
       return 'No pull-request found' unless pull_request
 
-      build_log.add_build!(sha, date)
+      build_log.add_build!(sha, date, job_number)
 
       update_pull_request(description: build_log.to_s)
       "UPDATE #{user}/#{repo}/pull-request/#{id}"
