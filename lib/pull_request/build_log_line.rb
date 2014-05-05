@@ -4,7 +4,7 @@ class BuildLogLine
 
   private_class_method :new
 
-  attr_reader :sha, :date
+  attr_reader :sha, :date, :url
 
   def self.from_string(line)
     new(line: line)
@@ -18,9 +18,11 @@ class BuildLogLine
     if options.has_key?(:line)
       @line = options[:line]
       @sha  = @line.scan(/[a-f\d]{12,40}/).first
+      @url  = (@line.scan(/job\/.+?\/(.*)\)/).first || []).first
       date_string = @line.scan(/\d{4}\/\d{1,2}\/\d{1,2}/).first
     else
       @sha  = options.fetch(:sha)
+      @url  = options.fetch(:url)
       date_string = options[:date]
     end
     @date = Date.strptime(date_string, DATE_FORMAT) if date_string

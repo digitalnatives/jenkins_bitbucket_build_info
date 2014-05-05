@@ -5,11 +5,11 @@ module PullRequest
     attr_reader :build_lines, :normal_description, :repo_full_name, :badge_url
 
     SEPARATOR = "### Jenkins build statuses".freeze
-    LINE_FORMAT = "%{badge_img} %{sha_link} %{date}"
+    LINE_FORMAT = "%{badge_img} %{link} %{date}"
 
     def initialize(description_string, user, repo, badge_url)
       @badge_url = badge_url
-      @repo_full_name = "#{user}/#{repo}"
+      @repo_full_name = "#{user}-#{repo}"
       @normal_description, build_lines = description_string.split(SEPARATOR).map(&:to_s)
       @normal_description.rstrip! if @normal_description
       @build_lines = build_lines.to_s.strip.each_line("\n\n").map do |line|
@@ -17,9 +17,10 @@ module PullRequest
                      end.to_set
     end
 
-    def add_build!(sha, date = nil)
-      log_line = BuildLogLine.from_status(sha: sha, date: date)
-      build_lines << log_line unless build_lines.select{ |line| line.sha == log_line.sha }.length > 0
+    def add_build!(sha, date = nil, job_number = '')
+      log_line = BuildLogLine.from_status(sha: sha, date: date, url: job_number)
+      build_lines.select!{ |line| line.sha != log_line.sha }
+      build_lines << log_line
     end
 
     def to_s
@@ -35,7 +36,7 @@ module PullRequest
       build_lines.map do |bl|
         (LINE_FORMAT % {
           badge_img: badge_img(bl),
-          sha_link: sha_link(bl),
+          link: link(bl),
           date: bl.formatted_date
         }).strip
       end.join("\n\n")
@@ -45,8 +46,8 @@ module PullRequest
       "![badge](#{badge_url})" % { sha: build_line.sha }
     end
 
-    def sha_link(build_line)
-      "[commit details](https://bitbucket.org/#{repo_full_name}/commits/#{build_line.sha})"
+    def link(build_line)
+      "[jenkins](#{ENV['JENKINS_URL']}/job/#{repo_full_name}/#{build_line.url})"
     end
   end
 end
