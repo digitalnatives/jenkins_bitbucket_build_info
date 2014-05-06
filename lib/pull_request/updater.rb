@@ -27,7 +27,7 @@ module PullRequest
     private
 
     def updatable_attributes
-      pull_request.bitbucket_data.select { |k, v| %w(close_source_branch title destination).include?(k) }
+      pull_request.bitbucket_data.select { |k, v| %w(close_source_branch title destination reviewers).include?(k) }
     end
 
     def update_pull_request(updated_attributes)
