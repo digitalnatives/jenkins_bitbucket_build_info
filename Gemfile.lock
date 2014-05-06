@@ -20,6 +20,7 @@ GEM
       nio4r (>= 0.5.0)
     coderay (1.1.0)
     columnize (0.3.6)
+    curb (0.8.5)
     daemon_controller (1.1.8)
     debugger (1.6.5)
       columnize (>= 0.3.1)
@@ -109,6 +110,7 @@ PLATFORMS
 
 DEPENDENCIES
   bitbucket_rest_api!
+  curb (~> 0.8.5)
   debugger
   dotenv
   guard-rspec
