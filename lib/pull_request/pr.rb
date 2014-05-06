@@ -52,8 +52,9 @@ class PullRequest::PR
 
   def self.find(sha, user, repo)
     if found_pull_request = find_bitbucket_pull_request(sha, user, repo)
+      pull_request = bitbucket_client.repos.pullrequests.get user, repo, found_pull_request.id
       badge_url = yield if block_given?
-      new(user, repo, sha, badge_url, found_pull_request)
+      new(user, repo, sha, badge_url, pull_request)
     end
   end
 
