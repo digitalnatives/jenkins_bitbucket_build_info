@@ -20,6 +20,7 @@ GEM
       nio4r (>= 0.5.0)
     coderay (1.1.0)
     columnize (0.3.6)
+    curb (0.8.5)
     daemon_controller (1.1.8)
     debugger (1.6.5)
       columnize (>= 0.3.1)
@@ -31,8 +32,8 @@ GEM
     dotenv (0.9.0)
     faraday (0.8.9)
       multipart-post (~> 1.2.0)
-    faraday_middleware (0.9.0)
-      faraday (>= 0.7.4, < 0.9)
+    faraday_middleware (0.9.1)
+      faraday (>= 0.7.4, < 0.10)
     ffi (1.9.3)
     formatador (0.2.4)
     guard (2.4.0)
@@ -62,7 +63,7 @@ GEM
     mini_portile (0.5.2)
     mixlib-shellout (1.4.0)
     mock_redis (0.11.0)
-    multi_json (1.8.4)
+    multi_json (1.10.0)
     multipart-post (1.2.0)
     nio4r (1.0.0)
     nokogiri (1.6.1)
@@ -109,6 +110,7 @@ PLATFORMS
 
 DEPENDENCIES
   bitbucket_rest_api!
+  curb (~> 0.8.5)
   debugger
   dotenv
   guard-rspec

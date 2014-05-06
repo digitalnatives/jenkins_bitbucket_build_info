@@ -4,7 +4,7 @@ require 'pull_request/build_log_line'
 describe BuildLogLine do
   DATE_FORMAT = BuildLogLine::DATE_FORMAT
 
-  let(:status) { { sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2014/02/21' } }
+  let(:status) { { sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2014/02/21', url: '' } }
   let(:line) { "![badge](/user/repo/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf/badge) [commit details](https://bitbucket.org/user/repo/commits/1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf) 2014/02/21" }
 
   let(:build_line_from_string) { BuildLogLine.from_string(line) }
@@ -30,12 +30,12 @@ describe BuildLogLine do
     end
 
     it "leaves nil on date if it is not present" do
-      expect(BuildLogLine.from_status(sha: status[:sha]).date).to be_nil
+      expect(BuildLogLine.from_status(sha: status[:sha], url: '').date).to be_nil
     end
   end
 
   describe "#formatted_date" do
-    let(:build_log_line_with_nil_date) { BuildLogLine.from_status(sha: "some_sha") }
+    let(:build_log_line_with_nil_date) { BuildLogLine.from_status(sha: "some_sha", url: '') }
 
     it "is nil when date is nil" do
       expect(build_log_line_with_nil_date.formatted_date).to be_nil
@@ -43,9 +43,9 @@ describe BuildLogLine do
   end
 
   describe '#eql?' do
-    let(:line_1) { described_class.from_status(sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2013/12/31') }
-    let(:line_2) { described_class.from_status(sha: 'a4cad4e4c24ab53a725fe8953c2d587dd34573e1', date: '2014/01/10') }
-    let(:line_3) { described_class.from_status(sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2014/01/12') }
+    let(:line_1) { described_class.from_status(sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2013/12/31', url: '') }
+    let(:line_2) { described_class.from_status(sha: 'a4cad4e4c24ab53a725fe8953c2d587dd34573e1', date: '2014/01/10', url: '') }
+    let(:line_3) { described_class.from_status(sha: '1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date: '2014/01/12', url: '') }
 
     specify { expect(line_1).to be_eql(line_1) }
     specify { expect(line_1).to_not be_eql(line_2) }

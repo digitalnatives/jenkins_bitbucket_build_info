@@ -16,10 +16,12 @@ describe PullRequest::BuildLog do
       [
         { sha: "1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf",
           status: :passed,
-          date: "2014/02/21" },
+          date: "2014/02/21",
+          url: "1" },
         { sha: "a4cad4e4c24ab53a725fe8953c2d587dd34573e1",
           status: :failed,
-          date: "2014/02/20" },
+          date: "2014/02/20",
+          url: "2" },
       ]
     end
 
@@ -48,8 +50,8 @@ describe PullRequest::BuildLog do
     let(:sha) { '8888888888888888888888888888888888888888' }
     let(:date) { '2014/02/23' }
     let!(:previous_description) { subject.to_s.rstrip }
-    let(:new_build_line) { BuildLogLine.from_status(sha: sha, date: date) }
-    let(:same_build_line) { BuildLogLine.from_status(sha: sha, date: date) }
+    let(:new_build_line) { BuildLogLine.from_status(sha: sha, date: date, url: '') }
+    let(:same_build_line) { BuildLogLine.from_status(sha: sha, date: date, url: '') }
 
     it 'should insert a new line into the description' do
       subject.add_build!(sha, date)

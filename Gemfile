@@ -7,6 +7,7 @@ gem 'bitbucket_rest_api', github: 'digitalnatives/bitbucket'
 gem 'dotenv'
 gem 'passenger'
 gem 'jenkins_api_client', '1.0.0.beta.6'
+gem 'curb', '~> 0.8.5'
 
 group :development do
   gem 'debugger'
