@@ -5,4 +5,4 @@ rvm:
   - 2.1.0
 gemfile:
   - Gemfile
-bundler_args: --without development
+bundler_args: --without development --deployment
