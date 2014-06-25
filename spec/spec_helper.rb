@@ -1,4 +1,5 @@
 ENV['RACK_ENV'] = 'test'
+ENV['JENKINS_URL'] = 'http://url.to.jenkins'
 
 require File.expand_path('../../environment.rb', __FILE__)
 require File.expand_path('../../app.rb', __FILE__)

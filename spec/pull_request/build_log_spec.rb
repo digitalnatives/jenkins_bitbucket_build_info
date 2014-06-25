@@ -60,7 +60,6 @@ describe PullRequest::BuildLog do
 
     it 'should not insert a new line into description if teher is a blog line with same sha' do
       subject.add_build!('1f4ad90294d3fd7ab5cebe42ee97655c2e709bbf', date)
-      puts subject.build_lines.count
       expect(subject.build_lines.to_a.count).to eq(2)
     end
   end

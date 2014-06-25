@@ -34,7 +34,7 @@ module PullRequest
     def update_pull_request(updated_attributes)
       # TODO: Faraday messes up the PR update somehow and reveiwers and not being sent, so use Crub.
       # PR.bitbucket_client.repos.pullrequests.update(user,repo,id,updatable_attributes.merge(updated_attributes))
-      username, password = ENV['BITBUCKET_CREDENTIALS'].split ":"
+      username, password = ENV['BITBUCKET_CREDENTIALS'].to_s.split ":"
       c = Curl::Easy.new "https://api.bitbucket.org/2.0/repositories/#{user}/#{repo}/pullrequests/#{id}"
       c.http_auth_types = :basic
       c.username = username
