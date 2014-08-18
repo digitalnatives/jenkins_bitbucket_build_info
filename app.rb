@@ -23,7 +23,7 @@ post '/bitbucket/post_pull_request' do
           end
 
 
-  if build && build.new?
+  if build && (build.new? || build.restart?)
     build.submit
 
     username = hook_request_parser.username
