@@ -14,6 +14,10 @@ class Build
     !self.class.redis.hget(key, :sha)
   end
 
+  def restart?
+    @attributes_hash[:restart]
+  end
+
   def save
     self.class.redis.mapped_hmset key, attributes_hash
   end

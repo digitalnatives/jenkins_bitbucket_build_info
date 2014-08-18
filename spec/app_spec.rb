@@ -28,6 +28,7 @@ describe 'Application' do
       it "has new commits which have already been built" do
         hook_request_parser.stub(can_trigger_a_build?: true)
         build.stub(new?: false)
+        build.stub(restart?: false)
         expect(build).not_to receive(:submit)
         post_to_hook
       end
@@ -39,13 +40,15 @@ describe 'Application' do
       end
     end
 
-    it "submits a new build and returns OK" do
-      pending
-      hook_request_parser.stub(can_trigger_a_build?: true)
-      build.stub(new?: true)
-      expect(build).to receive(:submit)
-      post_to_hook
-      expect(last_response).to be_ok
+    [:new?, :restart?].each do |status|
+      it "submits when #{status} and returns OK" do
+        pending
+        hook_request_parser.stub(can_trigger_a_build?: true)
+        build.stub(status => true)
+        expect(build).to receive(:submit)
+        post_to_hook
+        expect(last_response).to be_ok
+      end
     end
   end
 
