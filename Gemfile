@@ -11,6 +11,8 @@ gem 'curb', '~> 0.8.5'
 gem 'rake'
 
 group :development do
+  gem 'foreman', require: false
+  gem 'shotgun', require: false
   gem 'pry-byebug',  require: false
   gem 'guard-rspec', require: false
 end
