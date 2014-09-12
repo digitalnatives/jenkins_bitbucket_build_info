@@ -1,4 +1,3 @@
-# A sample Gemfile
 source "https://rubygems.org"
 
 gem 'sinatra'
@@ -10,7 +9,7 @@ gem 'jenkins_api_client', '1.0.0.beta.6'
 gem 'curb', '~> 0.8.5'
 
 group :development do
-  gem 'debugger'
+  gem 'pry-byebug',  require: false
   gem 'guard-rspec', require: false
 end
 

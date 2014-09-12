@@ -2,7 +2,7 @@ language: ruby
 script: "bundle exec rspec"
 rvm:
   - 2.0.0
-  - 2.1.0
+  - 2.1.2
 gemfile:
   - Gemfile
 bundler_args: --without development --deployment
