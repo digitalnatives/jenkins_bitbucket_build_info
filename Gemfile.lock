@@ -119,6 +119,7 @@ DEPENDENCIES
   passenger
   pry-byebug
   rack-test
+  rake
   redis
   rspec
   sinatra
